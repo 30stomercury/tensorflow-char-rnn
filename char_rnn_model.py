@@ -269,6 +269,7 @@ class CharRNN(object):
                                    self.initial_state: state})
       unnormalized_probs = np.exp((logits - np.max(logits)) / temperature)
       probs = unnormalized_probs / np.sum(unnormalized_probs)
+      print(probs)
 
       if max_prob:
         sample = np.argmax(probs[0])
@@ -293,6 +294,8 @@ class BatchGenerator(object):
       self.index_vocab_dict = index_vocab_dict
       
       segment = self._text_size // batch_size
+      # debug
+      print(self._text_size, segment)
 
       # number of elements in cursor list is the same as
       # batch_size.  each batch is just the collection of
@@ -316,6 +319,7 @@ class BatchGenerator(object):
       for step in range(self._n_unrollings):
         batches.append(self._next_batch())
       self._last_batch = batches[-1]
+
       return batches
 
 

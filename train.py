@@ -1,5 +1,6 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+#os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 import argparse
 import codecs
@@ -10,7 +11,9 @@ import shutil
 import sys
 
 import numpy as np
+import string
 from char_rnn_model import *
+from string import punctuation
 from six import iteritems
 
 
@@ -188,7 +191,11 @@ def main():
     # Read and split data.
     logging.info('Reading data from: %s', args.data_file)
     with codecs.open(args.data_file, 'r', encoding=args.encoding) as f:
-        text = f.read()
+        text_origin = f.read()
+
+    # text cleaning
+    text = text_cleaning(text_origin)
+
 
     if args.test:
         text = text[:1000]
@@ -211,7 +218,8 @@ def main():
           args.vocab_file, args.encoding)
     else:
         logging.info('Creating vocabulary')
-        vocab_index_dict, index_vocab_dict, vocab_size = create_vocab(text)
+        #vocab_index_dict, index_vocab_dict, vocab_size = create_vocab(text)
+        vocab_index_dict, index_vocab_dict, vocab_size = create_vocab()
         vocab_file = os.path.join(args.output_dir, 'vocab.json')
         save_vocab(vocab_index_dict, vocab_file, args.encoding)
         logging.info('Vocabulary is saved in %s', vocab_file)
@@ -348,9 +356,27 @@ def main():
         with open(result_path, 'w') as f:
             json.dump(result, f, indent=2, sort_keys=True)
 
+def text_cleaning(text):
+    print("process text...")
+    text = "\n".join(item for item in text.split('\n') if item)
+    text = text.replace("\n"," ")
+    text = text.replace("  "," ")
+    print("Process text: remove punctuation...")
+    trans = str.maketrans(
+            "?!", "..", '"#$%&\'()*+,-/:;<=>@[\\]^_`{|}~'+"1234567890")
+    text = text.translate(trans)
+    print("process text: upper...")
+    text = text.upper()
+    print("process text: save...")
+    f_cleaned= open("data/libri_cleaned.txt","w+") 
+    f_cleaned.write(text)
+    f_cleaned.close()
+    print("cleaning done")
 
-def create_vocab(text):
-    unique_chars = list(set(text))
+    return text
+
+def create_vocab():
+    unique_chars = ["."," "] + list(string.ascii_uppercase[:26])
     vocab_size = len(unique_chars)
     vocab_index_dict = {}
     index_vocab_dict = {}
@@ -358,7 +384,6 @@ def create_vocab(text):
         vocab_index_dict[char] = i
         index_vocab_dict[i] = char
     return vocab_index_dict, index_vocab_dict, vocab_size
-
 
 def load_vocab(vocab_file, encoding):
     with codecs.open(vocab_file, 'r', encoding=encoding) as f:

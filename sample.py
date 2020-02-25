@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--max_prob', dest='max_prob', action='store_true',
                         help='always pick the most probable next character in sampling')
 
-    parser.set_defaults(max_prob=False)
+    parser.set_defaults(max_prob=True)
 
     parser.add_argument('--start_text', type=str,
                         default='The meaning of life is ',

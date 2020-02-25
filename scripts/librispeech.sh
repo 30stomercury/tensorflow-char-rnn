@@ -1,0 +1,12 @@
+python3 train.py \
+       --data_file=data/libri_inputs.txt \
+       --num_epochs=50 \
+       --hidden_size=512 \
+       --embedding_size=256 \
+       --num_layers=2 \
+       --model="lstm" \
+       --batch_size=64 \
+       --num_unrollings=280 \
+       --dropout=0.2 \
+       --n_save=20 \
+       --verbose=1
