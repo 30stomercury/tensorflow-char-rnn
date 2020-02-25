@@ -9,6 +9,11 @@ A TensorFlow implementation of Andrej Karpathy's [Char-RNN](https://github.com/k
 
 Follow the instructions on [TensorFlow official website](https://www.tensorflow.org/) to install TensorFlow. 
 
+# Prepare data
+```bash
+sh scripts/prepare_data.sh
+```
+
 # Test
 
 If the installation finishes with no error, quickly test your installation by running:
@@ -22,11 +27,17 @@ This will train char-rnn on the first 1000 characters of the tiny shakespeare co
 - `train.py` is the script for training.
 - `sample.py` is the script for sampling.
 - `char_rnn_model.py` implements the Char-RNN model.
+- `scripts/prepare_data.sh` is the script for preparing librispeech corpus.
 
-## Training
+## Training on tiny shakespeare corpus
 To train on tiny shakespeare corpus (included in data/) with default settings (this might take a while):
 ```bash
 python train.py --data_file=data/tiny_shakespeare.txt
+```
+
+## Training on librispeech corpus
+```bash
+sh scripts/librispeech.sh
 ```
 
 All the output of this experiment will be saved in a folder (default to `output/`, you can specify the folder name using `--output_dir=your-output-folder`). 
